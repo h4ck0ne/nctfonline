@@ -8,7 +8,11 @@ session_start();
 error_reporting(0);
 //Set the database access information as constants
 
- 
+
+DEFINE ('DB_HOST', 'localhost');
+DEFINE ('DB_USER', 'root');
+DEFINE ('DB_PASSWORD', '');
+DEFINE ('DB_NAME', 'nctfonline'); 
 
 @ $dbc = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
