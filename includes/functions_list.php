@@ -124,15 +124,17 @@ WHERE
     
 	$ip = get_ip();
     // Error checks (Should be explained with the error) 
-    if ($uLen <= 4 || $uLen >= 11) { 
-      $_SESSION['error'] = "Username must be between 4 and 11 characters."; 
+    if ($uLen <= 4 || $uLen >= 16) { 
+      $_SESSION['error'] = "Username must be between 5 and 11 characters."; 
     }elseif ($pLen < 6) { 
       $_SESSION['error'] = "Password must be longer then 6 characters."; 
+    }elseif (!filter_var($pMail, FILTER_VALIDATE_EMAIL)){
+      $_SESSION['error'] = "Invaild Email address."; 
     }elseif (mysqli_num_rows($query) == 1) { 
       $_SESSION['error'] = "Username already exists."; 
     }else { 
-	  $sql = "INSERT INTO nctf_accounts (`username`, `password`, `mail`,`time`,`register_ip`) VALUES ('" . $eUsername . "', '" . hashPassword($pPassword). "','" . $pMail . "',now(),'" . $ip . "');";  
-	  echo $sql;
+	  $sql = "INSERT INTO nctf_accounts (`username`, `password`, `mail`,`register_time`,`register_ip`) VALUES ('" . $eUsername . "', '" . hashPassword($pPassword). "','" . $pMail . "',now(),'" . $ip . "');";  
+	  //echo $sql;
       $query = mysqli_query($dbc,$sql) or trigger_error("Query Failed: " . mysql_error()); 
       if ($query) { 
         return true; 
@@ -151,9 +153,11 @@ WHERE
 ************/ 
 function loggedIn() { 
   // check both loggedin and username to verify user. 
+  if (isset($_SESSION['loggedin'])){
   if ($_SESSION['loggedin'] && isset($_SESSION['username'])) { 
     return true; 
   } 
+  }
    
   return false; 
 } 
@@ -192,12 +196,32 @@ function validateUser($pEmail, $pPassword) {
     $_SESSION['username'] = $row['username']; 
 	$_SESSION['user_id'] = $row['user_id']; 
     $_SESSION['loggedin'] = true;       
-	
     return true; 
   } 
   
   return false; 
 } 
+
+
+function validateUser_Name($pName, $pPassword) { 
+   global $dbc;
+  // See if the email and password are valid. 
+  //$sql = "SELECT username FROM nctf_accounts  WHERE mail = '" . mysqli_real_escape_string($dbc,$pEmail) . "' AND password = '" . hashPassword($pPassword, SALT1, SALT2) . "' LIMIT 1"; 
+  $sql = "SELECT username,user_id FROM nctf_accounts  WHERE username = '" . mysqli_real_escape_string($dbc,$pName) . "' AND password = '" . hashPassword($pPassword) . "' LIMIT 1"; 
+  $query = mysqli_query($dbc,$sql) or trigger_error("Query Failed: " . mysql_error()); 
+  
+  // If one row was returned, the user was logged in! 
+  if (mysqli_num_rows($query) == 1) { 
+    $row = mysqli_fetch_assoc($query); 
+    $_SESSION['username'] = $row['username']; 
+	$_SESSION['user_id'] = $row['user_id']; 
+    $_SESSION['loggedin'] = true;       
+    return true; 
+  } 
+  
+  return false; 
+} 
+
 
 function cast_query_results($rs) {
     $fields = mysqli_fetch_fields($rs);

@@ -15,7 +15,7 @@ $sOutput .= '<div  class="container col-md-5 col-md-offset-3" ><table class="tab
    <tbody>';
 
 //Create a query to fetch all the questions
-$query = "select user_id,username,score,time from nctf_accounts order by score DESC,time ASC";
+$query = "select user_id,username,score,last_answer_time from nctf_accounts order by score DESC,last_answer_time ASC";
 
 //Run the query
 $result = $dbc->query($query);

@@ -9,8 +9,11 @@ if (isset($_GET['action'])) {
       // If the form was submitted lets try to create the account. 
       if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) { 
         if (createAccount($_POST['username'], $_POST['password'], $_POST['email'])) { 
-          $sOutput .= '<h2>Account Created</h2><br><h5>Your account has been created.  
-                You can now login <a href="login.php">here</a></h5>.'; 
+          $sOutput .= '
+          <div  class="container col-md-3 col-md-offset-4" >
+	      <h2>REGISTER SUCCESS</h2> ';
+          header("Refresh:2;url=login.php");
+          
         }else { 
           // unset the action to display the registration form. 
           unset($_GET['action']); 
@@ -26,10 +29,9 @@ if (isset($_GET['action'])) {
  
 // If the user is logged in display them a message. 
 if (loggedIn()) { 
-  $sOutput .= '<h2>Already Registered</h2> 
-        You have already registered and are currently logged in as: ' . $_SESSION['username'] . '. 
-        <h4>Would you like to <a href="login.php?action=logout">logout</a>?</h4> 
-        <h4>Would you like to go to <a href="index.php">site index</a>?</h4>'; 
+  $sOutput .= '<div  class="container col-md-3 col-md-offset-4" >
+        <br>
+        <h2>ALREADY REGISTER</h2>'; 
          
 // If the action is not set, we want to display the registration form 
 }elseif (!isset($_GET['action'])) { 
@@ -50,17 +52,15 @@ if (loggedIn()) {
         <h2>Register</h2>
         <form method="post" action="' . $_SERVER['PHP_SELF'] . '?action=register">
             <div class="form-group">
-                <input type="text" placeholder="Enter your username here" name="username"  value="' . $sUsername . '"  id="username" class="form-control">
+                <input type="text" placeholder="between 5 and 11 characters." name="username"  value="' . $sUsername . '"  id="username" class="form-control">
             </div>
 			 <div class="form-group">
-                <input type="password" placeholder="Enter your password here" name="password" id="password" class="form-control">
+                <input type="password" placeholder="longer then 6 characters" name="password" id="password" class="form-control">
             </div>
 			<div class="form-group">
                 <input type="text" placeholder="Enter your email here" name="email" id="email" class="form-control">
             </div>
-            
-            <button name="submit" value="submit" class="btn btn-primary btn-large" type="submit">Register!</button>' . $sError . '
-			<h4> </h4><h5>Would you like to <a href="login.php">login</a>?</h5>
+            <button name="submit" value="submit" class="btn btn-primary btn-large" type="submit">Register!</button> <a href="login.php"  class="btn btn-link btn-large">  login</button></a><br> ' . $sError . ' 
         </form>';
 
 } 
